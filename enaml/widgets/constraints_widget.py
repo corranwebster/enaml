@@ -13,7 +13,6 @@ from casuarius import ConstraintVariable
 
 from enaml.core.declarative import d_
 from enaml.layout.ab_constrainable import ABConstrainable
-from enaml.layout.layout_helpers import expand_constraints
 
 from .widget import Widget, ProxyWidget
 
@@ -116,26 +115,58 @@ class ConstraintsWidget(Widget):
         return self.left + self.width / 2.0
 
     #: How strongly a component hugs it's width hint. Valid strengths
-    #: are 'weak', 'medium', 'strong', 'required' and 'ignore'. Default
-    #: is 'strong'. This can be overridden on a per-control basis to
-    #: specify a logical default for the given control.
+    #: are 'weak', 'medium', 'strong', 'required' and 'ignore'. The
+    #: default is 'strong'. This can be overridden on a per-control
+    #: basis to specify a logical default for the given control. This
+    #: is equivalent to the following constraint:
+    #:
+    #:     (width == hint) | hug_width
     hug_width = d_(PolicyEnum('strong'))
 
     #: How strongly a component hugs it's height hint. Valid strengths
-    #: are 'weak', 'medium', 'strong', 'required' and 'ignore'. Default
-    #: is 'strong'. This can be overridden on a per-control basis to
-    #: specify a logical default for the given control.
+    #: are 'weak', 'medium', 'strong', 'required' and 'ignore'. The
+    #: default is 'strong'. This can be overridden on a per-control
+    #: basis to specify a logical default for the given control. This
+    #: is equivalent to the following constraint:
+    #:
+    #:     (height == hint) | hug_height
     hug_height = d_(PolicyEnum('strong'))
 
-    #: How strongly a component resists clipping its contents. Valid
+    #: How strongly a component resists clipping its width hint. Valid
     #: strengths are 'weak', 'medium', 'strong', 'required' and 'ignore'.
-    #: The default is 'strong' for width.
+    #: The default is 'strong'. This can be overridden on a per-control
+    #: basis to specify a logical default for the given control. This
+    #: is equivalent to the following constraint:
+    #:
+    #:     (width >= hint) | resist_width
     resist_width = d_(PolicyEnum('strong'))
 
-    #: How strongly a component resists clipping its contents. Valid
+    #: How strongly a component resists clipping its height hint. Valid
     #: strengths are 'weak', 'medium', 'strong', 'required' and 'ignore'.
-    #: The default is 'strong' for height.
+    #: The default is 'strong'. This can be overridden on a per-control
+    #: basis to specify a logical default for the given control. This
+    #: is equivalent to the following constraint:
+    #:
+    #:     (height >= hint) | resist_height
     resist_height = d_(PolicyEnum('strong'))
+
+    #: How strongly a component resists expanding its width hint. Valid
+    #: strengths are 'weak', 'medium', 'strong', 'required' and 'ignore'.
+    #: The default is 'ignore'. This can be overridden on a per-control
+    #: basis to specify a logical default for the given control. This
+    #: is equivalent to the following constraint:
+    #:
+    #:     (width <= hint) | limit_width
+    limit_width = d_(PolicyEnum('ignore'))
+
+    #: How strongly a component resists expanding its height hint. Valid
+    #: strengths are 'weak', 'medium', 'strong', 'required' and 'ignore'.
+    #: The default is 'strong'. This can be overridden on a per-control
+    #: basis to specify a logical default for the given control. This
+    #: is equivalent to the following constraint:
+    #:
+    #:     (height <= hint) | limit_height
+    limit_height = d_(PolicyEnum('ignore'))
 
     #: A reference to the ProxyConstraintsWidget object.
     proxy = Typed(ProxyConstraintsWidget)
@@ -143,13 +174,14 @@ class ConstraintsWidget(Widget):
     #--------------------------------------------------------------------------
     # Observers
     #--------------------------------------------------------------------------
-    @observe(('constraints', 'hug_width', 'hug_height', 'resist_width',
-        'resist_height'))
+    @observe('constraints', 'hug_width', 'hug_height', 'resist_width',
+        'resist_height')
     def _layout_invalidated(self, change):
         """ An observer which will relayout the proxy widget.
 
         """
-        self.request_relayout()
+        if change['type'] == 'update':
+            self.request_relayout()
 
     #--------------------------------------------------------------------------
     # Public API

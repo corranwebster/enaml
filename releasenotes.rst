@@ -1,6 +1,95 @@
 Enaml Release Notes
 ===================
 
+0.8.9 - 11/25/2013
+------------------
+- Add ability to query window minimized/maximized state. 713feb85952a_
+- Implement 'always_on_top' window flag. 3ac3e6955579_
+- A handful of bug fixes.
+
+.. _713feb85952a: https://github.com/nucleic/enaml/commit/713feb85952ab93094d6f06a8af457871355207c
+.. _3ac3e6955579: https://github.com/nucleic/enaml/commit/3ac3e6955579595c1c2ce2a74e79c1f96fe4a21e
+
+0.8.8 - 11/7/2013
+-----------------
+- Add a task dialog mini-framework and a MessageBox stlib component. 5583808f293a_
+
+.. _5583808f293a: https://github.com/nucleic/enaml/commit/5583808f293a881ea52b00907fd3d85cc2b3e7b0
+
+0.8.7 - 11/4/2013
+-----------------
+- Add an alerting api for dock items in a dock area. ba766d773090_
+
+.. _ba766d773090: https://github.com/nucleic/enaml/commit/ba766d7730908c7370727da8713a74f7d1380ed2
+
+0.8.6 - 10/30/2013
+------------------
+- Add 'limit_width' and 'limit_height' virtual constraints. 8722be90844e_
+
+.. _8722be90844e: https://github.com/nucleic/enaml/commit/8722be90844ed68809de792b818cd399bbb8bfa2
+
+0.8.5 - 10/29/2013
+------------------
+- Add support for style sheets to the DockArea. 5e38c591ad55_
+
+.. _5e38c591ad55: https://github.com/nucleic/enaml/commit/5e38c591ad55683d367b652460f70b75f3f087b2
+
+0.8.4 - 10/28/2013
+------------------
+- Add a size hint mode switch to Notebook and Stack. 330c7a337c32d_
+
+.. _330c7a337c32d: https://github.com/nucleic/enaml/commit/330c7a337c32d1b15a8d8d50acfc4ea208fd5330
+
+0.8.3 - 10/25/2013
+------------------
+- Add support for style sheets. 77e2a0afbd56_
+- Fix a bug with a null widget and the notebook selected tab. 64cfe8789838_
+
+.. _77e2a0afbd56: https://github.com/nucleic/enaml/commit/77e2a0afbd56489fe457c13c0b3e12e0187393ce
+.. _64cfe8789838: https://github.com/nucleic/enaml/commit/64cfe87898382b9a76a0450914d40272b6fa6d02
+
+0.8.2 - 10/11/2013
+------------------
+- Add a DynamicTemplate declarative object. ede76a778a86_
+- Add 'window' mode to PopupView. f37263fd7b7d_
+- Add 'selected_tab' attribute to the Notebook. 45ca092e7222_
+- Overhaul of the docs and doc build system.
+- Various bug fixes and performance improvements.
+
+.. _ede76a778a86: https://github.com/nucleic/enaml/commit/ede76a778a864dbb79636f38a15fd6b24e975228
+.. _f37263fd7b7d: https://github.com/nucleic/enaml/commit/f37263fd7b7db22c0a404660ccaea3f444b8a171
+.. _45ca092e7222: https://github.com/nucleic/enaml/commit/45ca092e722209163c4dad81741d2f09595efade
+
+0.8.1 - 09/25/2013
+------------------
+- Update the PopupView to automatically reposition on-screen. 3225683f9411_
+- Minor bug fixes.
+- Added an ImageView example.
+
+.. _3225683f9411: https://github.com/nucleic/enaml/commit/3225683f9411266d98b050be252440c7f5a1e892
+
+0.8.0 - 09/20/2013
+------------------
+- Added templates to the language.
+- Added aliases to the language.
+- Removed the compatibility code scheduled for removal.
+- Added a completely new declarative expression engine.
+
+0.7.20 - 08/12/2013
+-------------------
+- Bugfix area layout traversal. 308164fd5134_
+- Allow alpha hex colors. d9605cc55bb5_
+- Add a declarative Timer object. 13259258e6fd_
+- Added a Scintilla widget.
+- Added the applib sub-package.
+- Added live editor components to the applib.
+- Added an 'auto_sync' submit trigger to Field. 1926cde5e64b_
+
+.. _308164fd5134: https://github.com/nucleic/enaml/commit/308164fd513416ffb52a38db9b5b7039942e32f2
+.. _d9605cc55bb5: https://github.com/nucleic/enaml/commit/d9605cc55bb546f1a2593df0865687678de182f1
+.. _13259258e6fd: https://github.com/nucleic/enaml/commit/13259258e6fdb62181a26b24cef9d69f70c37ac3
+.. _1926cde5e64b: https://github.com/nucleic/enaml/commit/1926cde5e64ba3b4227886268869b10e755d5c0b
+
 0.7.19 - 07/22/2013
 -------------------
 - Added dock layout ops for extending/retracting from dock bars. 00ee34a102f_

@@ -74,6 +74,38 @@ def hard_constraints(d):
     return [d.left >= 0, d.top >= 0, d.width >= 0, d.height >= 0]
 
 
+def can_shrink_in_width(d):
+    """ Get whether a declarative container can shrink in width.
+
+    """
+    shrink = ('ignore', 'weak')
+    return d.resist_width in shrink and d.hug_width in shrink
+
+
+def can_shrink_in_height(d):
+    """ Get whether a declarative container can shrink in height.
+
+    """
+    shrink = ('ignore', 'weak')
+    return d.resist_height in shrink and d.hug_height in shrink
+
+
+def can_expand_in_width(d):
+    """ Get whether a declarative container can expand in width.
+
+    """
+    expand = ('ignore', 'weak')
+    return d.hug_width in expand and d.limit_width in expand
+
+
+def can_expand_in_height(d):
+    """ Get whether a declarative container can expand in height.
+
+    """
+    expand = ('ignore', 'weak')
+    return d.hug_height in expand and d.limit_height in expand
+
+
 class QtContainer(QtFrame, ProxyContainer):
     """ A Qt implementation of an Enaml ProxyContainer.
 
@@ -212,6 +244,24 @@ class QtContainer(QtFrame, ProxyContainer):
         self._refresh()
 
     #--------------------------------------------------------------------------
+    # ProxyConstraintsWidget API
+    #--------------------------------------------------------------------------
+    def request_relayout(self):
+        """ A reimplemented layout request handler.
+
+        This method drops the references to layout tables and layout
+        refresh function. This prevents edge case scenarios where a parent
+        container layout will occur before a child container, causing the
+        child to resize (potentially) deleted widgets still held as refs
+        in the layout table.
+
+        """
+        super(QtContainer, self).request_relayout()
+        del self._layout_table
+        del self._offset_table
+        del self._refresh
+
+    #--------------------------------------------------------------------------
     # Public Layout Handling
     #--------------------------------------------------------------------------
     def relayout(self):
@@ -315,8 +365,12 @@ class QtContainer(QtFrame, ProxyContainer):
         """
         widget = self.widget
         widget.setSizeHint(self.compute_best_size())
-        widget.setMinimumSize(self.compute_min_size())
-        widget.setMaximumSize(self.compute_max_size())
+        if not isinstance(widget.parent(), QContainer):
+            # Only set min and max size if the parent is not a container.
+            # The layout manager needs to be the ultimate authority when
+            # dealing with nested containers.
+            widget.setMinimumSize(self.compute_min_size())
+            widget.setMaximumSize(self.compute_max_size())
 
     def _build_refresher(self, manager):
         """ Build the refresh function for the container.
@@ -522,14 +576,15 @@ class QtContainer(QtFrame, ProxyContainer):
 
         """
         d = self.declaration
-        shrink = ('ignore', 'weak')
-        if d.resist_width in shrink and d.resist_height in shrink:
+        shrink_w = can_shrink_in_width(d)
+        shrink_h = can_shrink_in_height(d)
+        if shrink_w and shrink_h:
             return QSize(0, 0)
         if self._owns_layout and self._layout_manager is not None:
             w, h = self._layout_manager.get_min_size(d.width, d.height)
-            if d.resist_width in shrink:
+            if shrink_w:
                 w = 0
-            if d.resist_height in shrink:
+            if shrink_h:
                 h = 0
             return QSize(w, h)
         return QSize()
@@ -574,14 +629,15 @@ class QtContainer(QtFrame, ProxyContainer):
 
         """
         d = self.declaration
-        expanding = ('ignore', 'weak')
-        if d.hug_width in expanding and d.hug_height in expanding:
+        expand_w = can_expand_in_width(d)
+        expand_h = can_expand_in_height(d)
+        if expand_w and expand_h:
             return QSize(16777215, 16777215)
         if self._owns_layout and self._layout_manager is not None:
             w, h = self._layout_manager.get_max_size(d.width, d.height)
-            if w < 0 or d.hug_width in expanding:
+            if w < 0 or expand_w:
                 w = 16777215
-            if h < 0 or d.hug_height in expanding:
+            if h < 0 or expand_h:
                 h = 16777215
             return QSize(w, h)
         return QSize(16777215, 16777215)

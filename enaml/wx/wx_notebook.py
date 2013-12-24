@@ -441,7 +441,7 @@ class WxNotebook(WxConstraintsWidget, ProxyNotebook):
         """
         super(WxNotebook, self).child_removed(child)
         if isinstance(child, WxPage):
-            self.widget().RemoveWxPage(child.widget)
+            self.widget.RemoveWxPage(child.widget)
             self.size_hint_updated()
 
     #--------------------------------------------------------------------------
@@ -503,3 +503,9 @@ class WxNotebook(WxConstraintsWidget, ProxyNotebook):
             else:
                flags &= ~aui.AUI_NB_TAB_MOVE
             widget.SetAGWWindowStyleFlag(flags)
+
+    def set_size_hint_mode(self, mode):
+        """ This is not supported on Wx.
+
+        """
+        pass

@@ -10,6 +10,7 @@ from types import BuiltinFunctionType, MethodType
 
 from atom.api import Typed, Bool, List, Unicode, Instance
 
+from enaml.styling import StyleCache
 from enaml.widgets.widget import ProxyWidget
 
 from .QtCore import Qt, QSize, QMimeData, QByteArray, QPoint
@@ -18,6 +19,7 @@ from .QtGui import QFont, QWidget, QWidgetItem, QApplication, QPixmap, QDrag, \
 
 from .q_resource_helpers import get_cached_qcolor, get_cached_qfont
 from .qt_toolkit_object import QtToolkitObject
+from .styleutil import translate_style
 
 
 class QtWidget(QtToolkitObject, ProxyWidget):
@@ -89,6 +91,7 @@ class QtWidget(QtToolkitObject, ProxyWidget):
         if d.highlight_drop is not None:
             self.set_highlight_drop(d.highlight_drop)
         self.set_enabled(d.enabled)
+        self.refresh_style_sheet()
         # Don't make toplevel widgets visible during init or they will
         # flicker onto the screen. This applies particularly for things
         # like status bar widgets which are created with no parent and
@@ -109,6 +112,25 @@ class QtWidget(QtToolkitObject, ProxyWidget):
         self.widget.dragEnterEvent = self.dragEnterEvent
         self.widget.dragLeaveEvent = self.dragLeaveEvent
         self.widget.dropEvent = self.dropEvent
+
+    #--------------------------------------------------------------------------
+    # Protected API
+    #--------------------------------------------------------------------------
+    def refresh_style_sheet(self):
+        """ Refresh the widget style sheet with the current style data.
+
+        """
+        parts = []
+        name = self.widget.objectName()
+        for style in StyleCache.styles(self.declaration):
+            t = translate_style(name, style)
+            if t:
+                parts.append(t)
+        if len(parts) > 0:
+            stylesheet = u'\n\n'.join(parts)
+        else:
+            stylesheet = u''
+        self.widget.setStyleSheet(stylesheet)
 
     #--------------------------------------------------------------------------
     # ProxyWidget API
@@ -254,6 +276,12 @@ class QtWidget(QtToolkitObject, ProxyWidget):
         """
         self.widget.setVisible(False)
 
+    def restyle(self):
+        """ Restyle the widget with the current style data.
+
+        """
+        self.refresh_style_sheet()
+
     #--------------------------------------------------------------------------
     # Drag and drop
     #--------------------------------------------------------------------------
@@ -334,3 +362,4 @@ class QtWidget(QtToolkitObject, ProxyWidget):
         self.declaration._handle_drop(content)
         event.acceptProposedAction()
         self.hover_exit()
+

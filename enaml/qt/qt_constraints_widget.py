@@ -77,11 +77,15 @@ class QtConstraintsWidget(QtWidget, ProxyConstraintsWidget):
                     cns.append((d.width == width_hint) | d.hug_width)
                 if d.resist_width != 'ignore':
                     cns.append((d.width >= width_hint) | d.resist_width)
+                if d.limit_width != 'ignore':
+                    cns.append((d.width <= width_hint) | d.limit_width)
             if height_hint >= 0:
                 if d.hug_height != 'ignore':
                     cns.append((d.height == height_hint) | d.hug_height)
                 if d.resist_height != 'ignore':
                     cns.append((d.height >= height_hint) | d.resist_height)
+                if d.limit_height != 'ignore':
+                    cns.append((d.height <= height_hint) | d.limit_height)
         return cns
 
     #--------------------------------------------------------------------------
@@ -228,3 +232,12 @@ class QtConstraintsWidget(QtWidget, ProxyConstraintsWidget):
         # container can know the object on which the updater operates.
         update_geometry.item = self
         return update_geometry
+
+    def restyle(self):
+        """ Restyle the widget with the current style data.
+
+        This reimplementation restyles from within a size hint guard.
+
+        """
+        with size_hint_guard(self):
+            super(QtConstraintsWidget, self).restyle()

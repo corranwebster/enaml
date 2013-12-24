@@ -1,6 +1,9 @@
 #------------------------------------------------------------------------------
-#  Copyright (c) 2013, Nucleic Development Team.
-#  All rights reserved.
+# Copyright (c) 2013, Nucleic Development Team.
+#
+# Distributed under the terms of the Modified BSD License.
+#
+# The full license is in the file COPYING.txt, distributed with this software.
 #------------------------------------------------------------------------------
 """ An example of the `FlowArea` widget.
 
@@ -77,6 +80,7 @@ items. Items can be added and removed, and each individual item is
 configurable. There is a single item which cannot be removed, and which
 controls the parameters for the entire area.
 
+<< autodoc-me >>
 """
 import random
 from enaml.widgets.api import (
